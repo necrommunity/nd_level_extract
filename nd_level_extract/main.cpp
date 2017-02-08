@@ -6,6 +6,9 @@
 int main()
 {
 	HANDLE handle_process;
+	std::vector<unsigned int> pointers; // temporary vector of pointers
+	std::vector<unsigned int> tiles; // list of pointers to tile objects
+	std::vector<unsigned int> entities; // list of pointers to entity objects
 
 	try
 	{
@@ -19,27 +22,78 @@ int main()
 
 	unsigned int address_base = getBaseAddress(handle_process, "NecroDancer.exe");
 
-	int sprite = address_base;
+	// Get list of tiles & entities (entities get removed later)
 
-	std::vector<int> pointers = { 0x3FC2BC, 0x10, 0x10, 0x10 }; // 2nd pointer to 0x48 = traps, 3rd to 0x38 = miniboss
+	int tile_curr = address_base;
+
+	pointers = { 0x3FC5C4, 0x10, 0x10, 0x10 };
 
 	for (unsigned int i = 0; i < pointers.size(); i++)
 	{
-		sprite = readMemoryInt(handle_process, sprite + pointers[i]);
+		tile_curr = readMemoryInt(handle_process, tile_curr + pointers[i]);
 	}
 
 	while (true)
 	{
-		try
+		int temp = readMemoryInt(handle_process, tile_curr + 0x18);
+		if (temp)
 		{
-			std::cout << readMemoryInt(handle_process, readMemoryInt(handle_process, sprite + 0x18) + 0x14) << "\n";
+			tiles.push_back(temp);
+			tile_curr = readMemoryInt(handle_process, tile_curr + 0x10);
 		}
-		catch (std::runtime_error)
+		else
 		{
 			break;
 		}
+	}
+	
+	// Get list of entities & remove entities from "tiles" vector
 
-		sprite = readMemoryInt(handle_process, sprite + 0x10);
+	int entity_curr = address_base;
+
+	pointers = { 0x3FC2BC, 0x10, 0x10, 0x10 };
+
+	for (unsigned int i = 0; i < pointers.size(); i++)
+	{
+		entity_curr = readMemoryInt(handle_process, entity_curr + pointers[i]);
+	}
+
+	while (true)
+	{
+		int temp = readMemoryInt(handle_process, entity_curr + 0x18);
+		if (temp)
+		{
+			entities.push_back(temp);
+			entity_curr = readMemoryInt(handle_process, entity_curr + 0x10);
+
+			for (unsigned int i = 0; i < tiles.size(); i++) // Remove from tile list if it matches the entity
+			{
+				if (tiles[i] == entities.back())
+				{
+					tiles.erase(tiles.begin() + i);
+					break;
+				}
+			}
+		}
+
+		else
+		{
+			break;
+		}
+	}
+
+	std::cout << "Tiles:\n";
+
+	for (unsigned int i = 0; i < tiles.size(); i++)
+	{
+		std::cout << tiles[i] << "\n";
+	}
+
+	std::cout << "Entities:\n";
+
+	for (unsigned int i = 0; i < entities.size(); i++)
+	{
+		std::cout << entities[i] << "\n";
 	}
 
 	closeProcess(handle_process);
