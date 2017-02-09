@@ -112,9 +112,15 @@
   <ItemGroup>
     <ClCompile Include="handle_memory.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="tinystr.cpp" />
+    <ClCompile Include="tinyxml.cpp" />
+    <ClCompile Include="tinyxmlerror.cpp" />
+    <ClCompile Include="tinyxmlparser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="handle_memory.h" />
+    <ClInclude Include="tinystr.h" />
+    <ClInclude Include="tinyxml.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
