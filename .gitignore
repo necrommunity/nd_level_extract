@@ -6,4 +6,3 @@ Release/
 *.obj
 *.opendb
 *.tlog
-*.vcxproj.filters
