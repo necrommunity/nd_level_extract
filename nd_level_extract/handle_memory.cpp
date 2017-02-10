@@ -69,3 +69,27 @@ int readMemoryInt(HANDLE handle_process, int address, unsigned int data_size)
 
 	return value;
 }
+
+std::wstring readMemoryUnicodeString(HANDLE handle_process, int address, unsigned int data_size, bool zeroTerminate)
+{
+	std::wstring value = L"";
+	wchar_t temp;
+
+	for (unsigned int i = 0; i < data_size; i++)
+	{
+		if (!ReadProcessMemory(handle_process, (LPVOID)address, &temp, 2, NULL))
+		{
+			throw std::runtime_error("Could not read from memory.");
+		}
+
+		if (zeroTerminate && temp == '\x00\x00')
+		{
+			break;
+		}
+
+		value += temp;
+		address += 2;
+	}
+
+	return value;
+}
