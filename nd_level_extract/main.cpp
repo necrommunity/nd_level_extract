@@ -61,7 +61,7 @@ int main()
 		{"y", 0x18},
 		{"zone", 0x5C} // TODO: detect!
 	};
-	objType objType_tiles = objType("tile", "tiles", attributes, {address_base + 0x1B3890});
+	objType objType_tiles = objType("tile", "tiles", attributes, {0x1B3890});
 	objType_list.push_back(objType_tiles);
 
 	attributes = {
@@ -70,7 +70,7 @@ int main()
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType objType_traps = objType("trap", "traps", attributes, {address_base + 0x1C1E00});
+	objType objType_traps = objType("trap", "traps", attributes, {0x1C1E00});
 	objType_list.push_back(objType_traps);
 
 	attributes = {
@@ -80,7 +80,7 @@ int main()
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType objType_enemies = objType("enemy", "enemies", attributes, {address_base + 0x1E39A0, address_base + 0x1AD5B0, address_base + 0x218D30});
+	objType objType_enemies = objType("enemy", "enemies", attributes, {0x1E39A0, 0x1AD5B0, 0x218D30, 0xF3AC0});
 	objType_list.push_back(objType_enemies);
 
 	attributes = {
@@ -91,7 +91,7 @@ int main()
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType objType_items = objType("item", "items", attributes, {address_base + 0x180C40, address_base + 0x170890});
+	objType objType_items = objType("item", "items", attributes, {0x180C40, 0x170890});
 	objType_list.push_back(objType_items);
 
 	attributes = {
@@ -103,7 +103,7 @@ int main()
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType objType_chests = objType("chest", "chests", attributes, {address_base + 0x1C6C80, address_base + 0x1833F0});
+	objType objType_chests = objType("chest", "chests", attributes, {0x1C6C80, 0x1833F0});
 	objType_list.push_back(objType_chests);
 
 	attributes = {
@@ -112,7 +112,7 @@ int main()
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType objType_crates = objType("crate", "crates", attributes, {address_base + 0x1A7F00});
+	objType objType_crates = objType("crate", "crates", attributes, {0x1A7F00});
 	objType_list.push_back(objType_crates);
 
 	attributes = {
@@ -120,7 +120,7 @@ int main()
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType objType_shrines = objType("shrine", "shrines", attributes, {address_base + 0x167220});
+	objType objType_shrines = objType("shrine", "shrines", attributes, {0x167220});
 	objType_list.push_back(objType_shrines);
 
 	// Get all objects
@@ -142,7 +142,7 @@ int main()
 			break;
 		}
 
-		int obj_id = readMemoryInt(handle_process, readMemoryInt(handle_process, temp + 0x0) + 0x0);
+		int obj_id = readMemoryInt(handle_process, readMemoryInt(handle_process, temp + 0x0) + 0x0) - address_base;
 
 		bool found = false;
 		unsigned int i = 0;
@@ -168,38 +168,38 @@ int main()
 
 		if (!found)
 		{
-			std::cout << "Error: object ID 0x" << std::hex << obj_id << std::dec << " is undefined.\n";
-			std::cout << "Detected object coordinates: " << readMemoryInt(handle_process, temp + 0x14) << ", " << readMemoryInt(handle_process, temp + 0x18) << "\n";
-			return 2;
+			std::cout << "Error: object ID 0x" << std::hex << obj_id - address_base << std::dec << " is undefined. Detected object coordinates: " << readMemoryInt(handle_process, temp + 0x14) << ", " << readMemoryInt(handle_process, temp + 0x18) << "\n";
 		}
-
-		std::map<std::string, unsigned int> obj_attributes;
-
-		for (auto const& p : objType_list[i].attributes)
+		else
 		{
-			if (p.second & ATTR_HARDCODED)
-			{
-				obj_attributes.insert(std::make_pair(p.first, LOWORD(p.second)));
-			}
-			else if (p.second & ATTR_READBYTE)
-			{
-				obj_attributes.insert(std::make_pair(p.first, (byte)readMemoryInt(handle_process, temp + LOWORD(p.second), 1)));
-			}
-			else if (p.second & ATTR_NOITEM)
-			{
-				obj_attributes.insert(std::make_pair(p.first, p.second));
-			}
-			else if (p.second & ATTR_BOOL)
-			{
-				obj_attributes.insert(std::make_pair(p.first, readMemoryInt(handle_process, temp + LOWORD(p.second)) > 1));
-			}
-			else
-			{
-				obj_attributes.insert(std::make_pair(p.first, readMemoryInt(handle_process, temp + LOWORD(p.second))));
-			}
-		}
+			std::map<std::string, unsigned int> obj_attributes;
 
-		objType_list[i].objList.push_back(obj_attributes);
+			for (auto const& p : objType_list[i].attributes)
+			{
+				if (p.second & ATTR_HARDCODED)
+				{
+					obj_attributes.insert(std::make_pair(p.first, LOWORD(p.second)));
+				}
+				else if (p.second & ATTR_READBYTE)
+				{
+					obj_attributes.insert(std::make_pair(p.first, (byte)readMemoryInt(handle_process, temp + LOWORD(p.second), 1)));
+				}
+				else if (p.second & ATTR_NOITEM)
+				{
+					obj_attributes.insert(std::make_pair(p.first, p.second));
+				}
+				else if (p.second & ATTR_BOOL)
+				{
+					obj_attributes.insert(std::make_pair(p.first, readMemoryInt(handle_process, temp + LOWORD(p.second)) > 1));
+				}
+				else
+				{
+					obj_attributes.insert(std::make_pair(p.first, readMemoryInt(handle_process, temp + LOWORD(p.second))));
+				}
+			}
+
+			objType_list[i].objList.push_back(obj_attributes);
+		}
 		obj = readMemoryInt(handle_process, obj + 0x10);
 	}
 
