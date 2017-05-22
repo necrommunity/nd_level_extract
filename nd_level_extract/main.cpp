@@ -1,8 +1,7 @@
-#include <iostream>
 #include <map>
 #include <iomanip>
-
-#include "tinyxml.h"
+#include <iostream>
+#include <pugixml.hpp>
 
 #include "handle_memory.h"
 
@@ -18,7 +17,7 @@ public:
 	std::string name_singular;
 	std::string name_plural;
 	std::map<std::string, unsigned int> attributes;
-	std::vector<std::map<std::string, unsigned int>> objList;
+	std::vector<std::map<std::string, int>> objList;
 	std::vector<unsigned int> ids; // Compare with [[obj+0x0]+0x0]
 
 	objType() {}
@@ -168,11 +167,11 @@ int main()
 
 		if (!found)
 		{
-			std::cout << "Error: object ID 0x" << std::hex << obj_id - address_base << std::dec << " is undefined. Detected object coordinates: " << readMemoryInt(handle_process, temp + 0x14) << ", " << readMemoryInt(handle_process, temp + 0x18) << "\n";
+			std::cout << "Error: object ID 0x" << std::hex << obj_id << std::dec << " is undefined. Detected object coordinates: " << readMemoryInt(handle_process, temp + 0x14) << ", " << readMemoryInt(handle_process, temp + 0x18) << "\n";
 		}
 		else
 		{
-			std::map<std::string, unsigned int> obj_attributes;
+			std::map<std::string, int> obj_attributes;
 
 			for (auto const& p : objType_list[i].attributes)
 			{
@@ -214,63 +213,53 @@ int main()
 		std::cout << "Found " << objType_list[i].objList.size() << " " << objType_list[i].name_plural.c_str() << "\n";
 	}
 
-	// Create XML file
+	// Generate XML document
 
-	TiXmlDocument xml;
-	TiXmlDeclaration *decl = new TiXmlDeclaration("1.0", "", "");
+	pugi::xml_document doc;
 
-	TiXmlElement *el_dungeon = new TiXmlElement("dungeon");
-	el_dungeon->SetAttribute("character", -1);
-	el_dungeon->SetAttribute("name", "LEVEL");
-	el_dungeon->SetAttribute("numLevels", 1);
+	pugi::xml_node node_dungeon = doc.append_child("dungeon");
+	node_dungeon.append_attribute("character") = -1;
+	node_dungeon.append_attribute("name") = "LEVEL";
+	node_dungeon.append_attribute("numLevels") = 1;
 
-	TiXmlElement *el_level = new TiXmlElement("level");
-	el_level->SetAttribute("bossNum", -1);
-	el_level->SetAttribute("music", 0);
-	el_level->SetAttribute("num", 1);
+	pugi::xml_node node_level = node_dungeon.append_child("level");
+	node_level.append_attribute("bossNum") = -1;
+	node_level.append_attribute("music") = 0;
+	node_level.append_attribute("num") = 1;
 
 	for (unsigned int i = 0; i < objType_list.size(); i++)
 	{
 		objType objType = objType_list[i];
 
-		TiXmlElement* el_level_objects = new TiXmlElement(objType.name_plural.c_str());
+		pugi::xml_node node_level_objects = node_level.append_child(objType.name_plural.c_str());
 
 		for (unsigned int j = 0; j < objType.objList.size(); j++)
 		{
-			TiXmlElement *el_level_object = new TiXmlElement(objType.name_singular.c_str());
+			pugi::xml_node node_level_object = node_level_objects.append_child(objType.name_singular.c_str());
 
 			for (auto const& p : objType.objList[j])
 			{
 				/*if (p.second & ATTR_READUSTR)
 				{
-					int text_len = readMemoryInt(handle_process, LOWORD(p.second) + 0x4);
-					std::wstring text = readMemoryUnicodeString(handle_process, LOWORD(p.second) + 0x8, text_len);
-					el_level_object->SetAttribute(p.first.c_str(), (char*)text.c_str()); // lazy conversion
+				int text_len = readMemoryInt(handle_process, LOWORD(p.second) + 0x4);
+				std::wstring text = readMemoryUnicodeString(handle_process, LOWORD(p.second) + 0x8, text_len);
+				el_level_object->SetAttribute(p.first.c_str(), (char*)text.c_str()); // lazy conversion
 				}*/
 				if (p.second == ATTR_NOITEM) // TODO: make this actually better
 				{
-					el_level_object->SetAttribute(p.first.c_str(), "no_item");
+					node_level_object.append_attribute(p.first.c_str()) = "no_item";
 				}
 				else
 				{
-					el_level_object->SetAttribute(p.first.c_str(), p.second);
+					node_level_object.append_attribute(p.first.c_str()) = p.second;
 				}
 			}
-
-			el_level_objects->LinkEndChild(el_level_object);
 		}
-
-		el_level->LinkEndChild(el_level_objects);
 	}
 
-	el_dungeon->LinkEndChild(el_level);
+	// Save XML document
 
-	xml.LinkEndChild(decl);
-	xml.LinkEndChild(el_dungeon);
-	xml.SaveFile("LEVEL.xml");
-
-	// Log results
-
+	doc.save_file("LEVEL.xml");
 	std::cout << "XML file generated";
 
 	return 0;
