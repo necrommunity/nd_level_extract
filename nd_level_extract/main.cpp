@@ -61,7 +61,7 @@ int main()
 		{"y", 0x18},
 		{"zone", 0x5C} // TODO: detect!
 	};
-	objType_tiles.offsets_firstObj = {0x4026CC, 0x10, 0x10, 0x10};
+	objType_tiles.offsets_firstObj = {0x42DBEC, 0x10, 0x10, 0x10};
 	// Don't add to objType_list yet, special case
 
 	objType objType_traps;
@@ -73,7 +73,7 @@ int main()
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType_traps.offsets_firstObj = {0x40246C, 0x10, 0x10};
+	objType_traps.offsets_firstObj = {0x42D97C, 0x10, 0x10};
 	objType_list.push_back(objType_traps);
 
 	objType objType_enemies;
@@ -86,7 +86,7 @@ int main()
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType_enemies.offsets_firstObj = {0x4024D0, 0x10, 0x10};
+	objType_enemies.offsets_firstObj = {0x42D9E0, 0x10, 0x10};
 	objType_list.push_back(objType_enemies);
 
 	objType objType_items;
@@ -100,7 +100,7 @@ int main()
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType_items.offsets_firstObj = {0x402468, 0x10, 0x10};
+	objType_items.offsets_firstObj = {0x42D978, 0x10, 0x10};
 	objType_list.push_back(objType_items);
 
 	objType objType_chests;
@@ -115,7 +115,7 @@ int main()
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType_chests.offsets_firstObj = {0x4021B4, 0x10, 0x10};
+	objType_chests.offsets_firstObj = {0x42D938, 0x10, 0x10};
 	objType_list.push_back(objType_chests);
 
 	objType objType_crates;
@@ -127,7 +127,7 @@ int main()
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType_crates.offsets_firstObj = {0x402198, 0x10, 0x10};
+	objType_crates.offsets_firstObj = {0x42D6AC, 0x10, 0x10};
 	objType_list.push_back(objType_crates);
 
 	objType objType_shrines;
@@ -138,7 +138,7 @@ int main()
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType_shrines.offsets_firstObj = {0x4021E8, 0x10, 0x10};
+	objType_shrines.offsets_firstObj = {0x42D6F8, 0x10, 0x10};
 	objType_list.push_back(objType_shrines);
 
 	// Get all objects of each type (except tiles)
