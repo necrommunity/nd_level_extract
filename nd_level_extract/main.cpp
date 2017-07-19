@@ -10,6 +10,7 @@
 #define ATTR_READUSTR (1 << 18) // [Currently does not work] Read Unicode string, using additional offset (length of string is at 0x4, string begins at 0x8)
 #define ATTR_NOITEM (1 << 19) // Set to "no_item"
 #define ATTR_BOOL (1 << 20) // Set to 1 if greater than 1
+#define ATTR_READFLOAT (1 << 21) // Read value as float (temporarily: hardcode to 0)
 
 class obj
 {
@@ -59,7 +60,7 @@ int main()
 		{"type", 0x58},
 		{"x", 0x14},
 		{"y", 0x18},
-		{"zone", 0x5C} // TODO: detect!
+		{"zone", 0x5C}
 	};
 	objType_tiles.offsets_firstObj = {0x42DBEC, 0x10, 0x10, 0x10};
 	// Don't add to objType_list yet, special case
@@ -68,8 +69,8 @@ int main()
 	objType_traps.name_singular = "trap";
 	objType_traps.name_plural = "traps";
 	objType_traps.attributes = {
-		{"subtype", ATTR_READBYTE | 0x10C},
-		{"type", 0xF0},
+		{"subtype", ATTR_READBYTE | 0x110}, // Buggy
+		{"type", 0xF4},
 		{"x", 0x14},
 		{"y", 0x18}
 	};
@@ -80,9 +81,9 @@ int main()
 	objType_enemies.name_singular = "enemy";
 	objType_enemies.name_plural = "enemies";
 	objType_enemies.attributes = {
-		{"beatDelay", ATTR_HARDCODED | 0}, // 0 is correct for most enemies
-		{"lord", ATTR_HARDCODED | 0}, // TODO: detect
-		{"type", 0x10C},
+		{"beatDelay", 0x114},
+		{"lord", ATTR_READBYTE | 0x118},
+		{"type", 0x110},
 		{"x", 0x14},
 		{"y", 0x18}
 	};
@@ -93,10 +94,10 @@ int main()
 	objType_items.name_singular = "item";
 	objType_items.name_plural = "items";
 	objType_items.attributes = {
-		{"bloodCost", ATTR_HARDCODED | 0}, // Float at offset 0x13C
-		{"saleCost", ATTR_HARDCODED | 0}, // Float at offset 0x140
-		{"singleChoice", ATTR_HARDCODED | 0}, // TODO: detect
-		{"type", ATTR_NOITEM}, // TODO: detect
+		{"bloodCost", ATTR_READFLOAT | 0x148},
+		{"saleCost", 0x100},
+		{"singleChoice", ATTR_READBYTE | 0xF8},
+		{"type", ATTR_READUSTR | 0xF4},
 		{"x", 0x14},
 		{"y", 0x18}
 	};
@@ -107,11 +108,11 @@ int main()
 	objType_chests.name_singular = "chest";
 	objType_chests.name_plural = "chests";
 	objType_chests.attributes = {
-		{"color", 0xF0},
-		{"contents", ATTR_NOITEM}, // TODO: detect
-		{"hidden", ATTR_HARDCODED | 0}, // TODO: detect
-		{"saleCost", ATTR_HARDCODED | 0}, // TODO: detect
-		{"singleChoice", ATTR_HARDCODED | 0}, // TODO: detect
+		{"color", 0xF4},
+		{"contents", ATTR_READUSTR | 0xF8},
+		{"hidden", 0x9C},
+		{"saleCost", 0x114}, // Buggy
+		{"singleChoice", ATTR_READBYTE | 0xFC},
 		{"x", 0x14},
 		{"y", 0x18}
 	};
@@ -122,8 +123,8 @@ int main()
 	objType_crates.name_singular = "crate";
 	objType_crates.name_plural = "crates";
 	objType_crates.attributes = {
-		{"contents", ATTR_NOITEM}, // TODO: detect (unicode string 0x230)
-		{"type", 0x22C},
+		{"contents", ATTR_READUSTR | 0x238},
+		{"type", 0x234},
 		{"x", 0x14},
 		{"y", 0x18}
 	};
@@ -134,7 +135,7 @@ int main()
 	objType_shrines.name_singular = "shrine";
 	objType_shrines.name_plural = "shrines";
 	objType_shrines.attributes = {
-		{"type", 0xF0},
+		{"type", 0xF4},
 		{"x", 0x14},
 		{"y", 0x18}
 	};
