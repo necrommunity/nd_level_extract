@@ -231,19 +231,36 @@ int main()
 				}
 				else
 				{
-					int temp = readMemoryInt(handle_process, obj.pointer + LOWORD(p.second));
+					int temp_int = readMemoryInt(handle_process, obj.pointer + LOWORD(p.second));
 
-					if (p.second & ATTR_READBYTE)
+					if (p.second & ATTR_READFLOAT)
 					{
-						temp &= UCHAR_MAX;
-					}
-					
-					if (p.second & ATTR_BOOL)
-					{
-						temp = (bool)temp;
+						float temp_float = readMemoryFloat(handle_process, obj.pointer + LOWORD(p.second));
+
+						value = std::to_string(temp_float);
+
+						// Remove trailing zeros
+						value.erase(value.find_last_not_of('0') + 1, std::string::npos);
+						if (value.back() == '.')
+						{
+							value.erase(value.end() - 1);
+						}
 					}
 
-					value = std::to_string(temp);
+					else
+					{
+						if (p.second & ATTR_READBYTE)
+						{
+							temp_int &= UCHAR_MAX;
+						}
+
+						if (p.second & ATTR_BOOL)
+						{
+							temp_int = (bool)temp_int;
+						}
+
+						value = std::to_string(temp_int);
+					}
 				}
 
 				obj.attributes.insert(std::make_pair(p.first, value));

@@ -70,6 +70,12 @@ int readMemoryInt(HANDLE handle_process, int address, unsigned int data_size)
 	return value;
 }
 
+float readMemoryFloat(HANDLE handle_process, int address)
+{
+	int temp = readMemoryInt(handle_process, address, 4);
+	return *(float *)&temp;
+}
+
 std::wstring readMemoryUnicodeString(HANDLE handle_process, int address, unsigned int data_size, bool zeroTerminate)
 {
 	std::wstring value = L"";
