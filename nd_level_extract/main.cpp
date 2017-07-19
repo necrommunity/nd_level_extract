@@ -247,6 +247,14 @@ int main()
 						}
 					}
 
+					else if (p.second & ATTR_READUSTR)
+					{
+						int strBase = readMemoryInt(handle_process, obj.pointer + LOWORD(p.second));
+						int strLen = readMemoryInt(handle_process, strBase + 0x4);
+						std::wstring str = readMemoryUnicodeString(handle_process, strBase + 0x8, strLen);
+						value = std::string(str.begin(), str.end());
+					}
+
 					else
 					{
 						if (p.second & ATTR_READBYTE)
