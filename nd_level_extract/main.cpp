@@ -16,7 +16,7 @@ class obj
 {
 public:
 	unsigned int pointer;
-	std::map<std::string, int> attributes;
+	std::map<std::string, std::string> attributes;
 };
 
 class objType
@@ -221,23 +221,23 @@ int main()
 			{
 				if (p.second & ATTR_HARDCODED)
 				{
-					obj.attributes.insert(std::make_pair(p.first, LOWORD(p.second)));
+					obj.attributes.insert(std::make_pair(p.first, std::to_string(LOWORD(p.second))));
 				}
 				else if (p.second & ATTR_READBYTE)
 				{
-					obj.attributes.insert(std::make_pair(p.first, (byte)readMemoryInt(handle_process, obj.pointer + LOWORD(p.second), 1)));
+					obj.attributes.insert(std::make_pair(p.first, std::to_string((byte)readMemoryInt(handle_process, obj.pointer + LOWORD(p.second), 1))));
 				}
 				else if (p.second & ATTR_NOITEM)
 				{
-					obj.attributes.insert(std::make_pair(p.first, p.second));
+					obj.attributes.insert(std::make_pair(p.first, std::to_string(p.second)));
 				}
 				else if (p.second & ATTR_BOOL)
 				{
-					obj.attributes.insert(std::make_pair(p.first, readMemoryInt(handle_process, obj.pointer + LOWORD(p.second)) > 1));
+					obj.attributes.insert(std::make_pair(p.first, std::to_string(readMemoryInt(handle_process, obj.pointer + LOWORD(p.second)) > 1)));
 				}
 				else
 				{
-					obj.attributes.insert(std::make_pair(p.first, readMemoryInt(handle_process, obj.pointer + LOWORD(p.second))));
+					obj.attributes.insert(std::make_pair(p.first, std::to_string(readMemoryInt(handle_process, obj.pointer + LOWORD(p.second)))));
 				}
 			}
 
@@ -282,20 +282,7 @@ int main()
 
 			for (auto const& p : objType.objList[j].attributes)
 			{
-				/*if (p.second & ATTR_READUSTR)
-				{
-				int text_len = readMemoryInt(handle_process, LOWORD(p.second) + 0x4);
-				std::wstring text = readMemoryUnicodeString(handle_process, LOWORD(p.second) + 0x8, text_len);
-				el_level_object->SetAttribute(p.first.c_str(), (char*)text.c_str()); // lazy conversion
-				}*/
-				if (p.second == ATTR_NOITEM) // TODO: make this actually better
-				{
-					node_level_object.append_attribute(p.first.c_str()) = "no_item";
-				}
-				else
-				{
-					node_level_object.append_attribute(p.first.c_str()) = p.second;
-				}
+				node_level_object.append_attribute(p.first.c_str()) = p.second.c_str();
 			}
 		}
 	}
