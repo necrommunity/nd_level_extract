@@ -219,26 +219,34 @@ int main()
 
 			for (auto const& p : objType_list[i].attributes)
 			{
+				std::string value;
+
 				if (p.second & ATTR_HARDCODED)
 				{
-					obj.attributes.insert(std::make_pair(p.first, std::to_string(LOWORD(p.second))));
-				}
-				else if (p.second & ATTR_READBYTE)
-				{
-					obj.attributes.insert(std::make_pair(p.first, std::to_string((byte)readMemoryInt(handle_process, obj.pointer + LOWORD(p.second), 1))));
+					value = std::to_string(LOWORD(p.second));
 				}
 				else if (p.second & ATTR_NOITEM)
 				{
-					obj.attributes.insert(std::make_pair(p.first, std::to_string(p.second)));
-				}
-				else if (p.second & ATTR_BOOL)
-				{
-					obj.attributes.insert(std::make_pair(p.first, std::to_string(readMemoryInt(handle_process, obj.pointer + LOWORD(p.second)) > 1)));
+					value = "no_item";
 				}
 				else
 				{
-					obj.attributes.insert(std::make_pair(p.first, std::to_string(readMemoryInt(handle_process, obj.pointer + LOWORD(p.second)))));
+					int temp = readMemoryInt(handle_process, obj.pointer + LOWORD(p.second));
+
+					if (p.second & ATTR_READBYTE)
+					{
+						temp &= UCHAR_MAX;
+					}
+					
+					if (p.second & ATTR_BOOL)
+					{
+						temp = (bool)temp;
+					}
+
+					value = std::to_string(temp);
 				}
+
+				obj.attributes.insert(std::make_pair(p.first, value));
 			}
 
 			objType_list[i].objList[j] = obj;
