@@ -1,4 +1,5 @@
 #include <map>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <pugixml.hpp>
@@ -57,6 +58,10 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	// Initialize log file stream
+
+	std::ofstream logfile("log.txt");
+
 	// Open handle for the game
 
 	HANDLE handle_process;
@@ -67,7 +72,7 @@ int main(int argc, char *argv[])
 	}
 	catch (std::exception e)
 	{
-		std::cout << "Could not find window.";
+		logfile << "Could not find window.";
 		return 1;
 	}
 
@@ -327,7 +332,7 @@ int main(int argc, char *argv[])
 
 	for (unsigned int i = 0; i < objType_list.size(); i++)
 	{
-		std::cout << "Found " << objType_list[i]->objList.size() << " " << objType_list[i]->name_plural.c_str() << "\n";
+		logfile << "Found " << objType_list[i]->objList.size() << " " << objType_list[i]->name_plural.c_str() << "\n";
 	}
 
 	// Generate XML document
@@ -374,7 +379,7 @@ int main(int argc, char *argv[])
 		break;
 	}
 	
-	std::cout << "XML file generated";
+	logfile << "XML file generated";
 
 	return 0;
 }
