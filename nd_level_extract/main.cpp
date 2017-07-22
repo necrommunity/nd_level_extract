@@ -69,7 +69,7 @@ int main()
 	objType_traps.name_singular = "trap";
 	objType_traps.name_plural = "traps";
 	objType_traps.attributes = {
-		{"subtype", ATTR_READBYTE | 0x110}, // Buggy
+		{"subtype", ATTR_HARDCODED | 0}, // Special case
 		{"type", 0xF4},
 		{"x", 0x14},
 		{"y", 0x18}
@@ -287,6 +287,18 @@ int main()
 
 			objType_list[i].objList[j] = obj;
 		}
+	}
+
+	// Get subtype of all traps (special case)
+
+	for (unsigned int i = 0; i < objType_list[1].objList.size(); i++)
+	{
+		obj obj = objType_list[1].objList[i];
+
+		int offset = obj.attributes["type"] == "1" ? 0x110 : 0x10C;
+		obj.attributes["subtype"] = std::to_string(readMemoryInt(handle_process, obj.pointer + offset));
+		
+		objType_list[1].objList[i] = obj;
 	}
 
 	// Close handle for the game
