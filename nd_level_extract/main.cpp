@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 	}
 	catch (std::exception e)
 	{
-		logfile << "Could not find window.";
+		logfile << "Could not find game window.";
 		return 1;
 	}
 
@@ -199,6 +199,8 @@ int main(int argc, char *argv[])
 
 			temp = readMemoryInt(handle_process, temp + 0x10);
 		}
+
+		logfile << "Found " << objType->objList.size() << " " << objType->name_plural.c_str() << '\n';
 	}
 
 	// Get all tile objects
@@ -246,6 +248,8 @@ int main(int argc, char *argv[])
 			objType_tiles->objList.push_back(obj);
 		}
 	}
+
+	logfile << "Found " << objType_tiles->objList.size() << " " << objType_tiles->name_plural.c_str() << '\n';
 
 	objType_list.insert(objType_list.begin(), objType_tiles);
 
@@ -328,13 +332,6 @@ int main(int argc, char *argv[])
 
 	closeProcess(handle_process);
 
-	// Log results
-
-	for (unsigned int i = 0; i < objType_list.size(); i++)
-	{
-		logfile << "Found " << objType_list[i]->objList.size() << " " << objType_list[i]->name_plural.c_str() << "\n";
-	}
-
 	// Generate XML document
 
 	pugi::xml_document doc;
@@ -379,7 +376,7 @@ int main(int argc, char *argv[])
 		break;
 	}
 	
-	logfile << "XML file generated";
+	logfile << "XML file generated\n";
 
 	return 0;
 }
