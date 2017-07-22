@@ -12,20 +12,20 @@
 #define ATTR_BOOL (1 << 20) // Set to 1 if greater than 1
 #define ATTR_READFLOAT (1 << 21) // Read value as float (temporarily: hardcode to 0)
 
-class obj
+struct Obj
 {
 public:
 	unsigned int pointer;
 	std::map<std::string, std::string> attributes;
 };
 
-class objType
+struct ObjType
 {
 public:
 	std::string name_singular;
 	std::string name_plural;
 	std::map<std::string, unsigned int> attributes;
-	std::vector<obj *> objList;
+	std::vector<Obj *> objList;
 	std::vector<unsigned int> offsets_firstObj;
 };
 
@@ -49,9 +49,9 @@ int main()
 
 	// Create all instances of objType
 
-	std::vector<objType *> objType_list;
+	std::vector<ObjType *> objType_list;
 
-	objType *objType_tiles = new objType();
+	ObjType *objType_tiles = new ObjType();
 	objType_tiles->name_singular = "tile";
 	objType_tiles->name_plural = "tiles";
 	objType_tiles->attributes = {
@@ -65,7 +65,7 @@ int main()
 	objType_tiles->offsets_firstObj = {0x42DBEC, 0x10, 0x10, 0x10};
 	// Don't add to objType_list yet, special case
 
-	objType *objType_traps = new objType();
+	ObjType *objType_traps = new ObjType();
 	objType_traps->name_singular = "trap";
 	objType_traps->name_plural = "traps";
 	objType_traps->attributes = {
@@ -77,7 +77,7 @@ int main()
 	objType_traps->offsets_firstObj = {0x42D97C, 0x10, 0x10};
 	objType_list.push_back(objType_traps);
 
-	objType *objType_enemies = new objType();
+	ObjType *objType_enemies = new ObjType();
 	objType_enemies->name_singular = "enemy";
 	objType_enemies->name_plural = "enemies";
 	objType_enemies->attributes = {
@@ -90,7 +90,7 @@ int main()
 	objType_enemies->offsets_firstObj = {0x42D9E0, 0x10, 0x10};
 	objType_list.push_back(objType_enemies);
 
-	objType *objType_items = new objType();
+	ObjType *objType_items = new ObjType();
 	objType_items->name_singular = "item";
 	objType_items->name_plural = "items";
 	objType_items->attributes = {
@@ -104,7 +104,7 @@ int main()
 	objType_items->offsets_firstObj = {0x42D978, 0x10, 0x10};
 	objType_list.push_back(objType_items);
 
-	objType *objType_chests = new objType();
+	ObjType *objType_chests = new ObjType();
 	objType_chests->name_singular = "chest";
 	objType_chests->name_plural = "chests";
 	objType_chests->attributes = {
@@ -119,7 +119,7 @@ int main()
 	objType_chests->offsets_firstObj = {0x42D938, 0x10, 0x10};
 	objType_list.push_back(objType_chests);
 
-	objType *objType_crates = new objType();
+	ObjType *objType_crates = new ObjType();
 	objType_crates->name_singular = "crate";
 	objType_crates->name_plural = "crates";
 	objType_crates->attributes = {
@@ -131,7 +131,7 @@ int main()
 	objType_crates->offsets_firstObj = {0x42D6AC, 0x10, 0x10};
 	objType_list.push_back(objType_crates);
 
-	objType *objType_shrines = new objType();
+	ObjType *objType_shrines = new ObjType();
 	objType_shrines->name_singular = "shrine";
 	objType_shrines->name_plural = "shrines";
 	objType_shrines->attributes = {
@@ -144,7 +144,7 @@ int main()
 
 	// Get all objects of each type (except tiles)
 
-	for each (objType *objType in objType_list)
+	for each (ObjType *objType in objType_list)
 	{
 		int temp = address_base;
 
@@ -162,7 +162,7 @@ int main()
 				break;
 			}
 
-			obj *obj;
+			Obj *obj;
 			obj->pointer = temp2;
 			objType->objList.push_back(obj);
 
@@ -191,9 +191,9 @@ int main()
 
 		bool isTile = true;
 
-		for each (objType *objType in objType_list)
+		for each (ObjType *objType in objType_list)
 		{
-			for each (obj *obj in objType->objList)
+			for each (Obj *obj in objType->objList)
 			{
 				if (obj->pointer == temp2)
 				{
@@ -210,7 +210,7 @@ int main()
 
 		if (isTile)
 		{
-			obj *obj;
+			Obj *obj;
 			obj->pointer = temp2;
 			objType_tiles->objList.push_back(obj);
 		}
@@ -220,9 +220,9 @@ int main()
 
 	// Get attributes of each object
 
-	for each (objType *objType in objType_list)
+	for each (ObjType *objType in objType_list)
 	{
-		for each (obj *obj in objType->objList)
+		for each (Obj *obj in objType->objList)
 		{
 			for (auto const& p : objType->attributes)
 			{
@@ -287,7 +287,7 @@ int main()
 
 	for (unsigned int i = 0; i < objType_traps->objList.size(); i++)
 	{
-		obj *obj = objType_traps->objList[i];
+		Obj *obj = objType_traps->objList[i];
 
 		int offset = obj->attributes["type"] == "1" ? 0x110 : 0x10C;
 		obj->attributes["subtype"] = std::to_string(readMemoryInt(handle_process, obj->pointer + offset));
@@ -320,7 +320,7 @@ int main()
 
 	for (unsigned int i = 0; i < objType_list.size(); i++)
 	{
-		objType *objType = objType_list[i];
+		ObjType *objType = objType_list[i];
 
 		pugi::xml_node node_level_objects = node_level.append_child(objType->name_plural.c_str());
 
