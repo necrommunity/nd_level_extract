@@ -191,20 +191,31 @@ int main()
 			break;
 		}
 
+		bool isTile = true;
+
 		for each (objType objType in objType_list)
 		{
 			for each (obj obj in objType.objList)
 			{
 				if (obj.pointer == temp2)
 				{
-					continue;
+					isTile = false;
+					break;
 				}
+			}
+
+			if (!isTile)
+			{
+				break;
 			}
 		}
 
-		obj obj;
-		obj.pointer = temp2;
-		objType_tiles.objList.push_back(obj);
+		if (isTile)
+		{
+			obj obj;
+			obj.pointer = temp2;
+			objType_tiles.objList.push_back(obj);
+		}
 	}
 
 	objType_list.insert(objType_list.begin(), objType_tiles);
