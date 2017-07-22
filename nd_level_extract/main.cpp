@@ -162,7 +162,7 @@ int main()
 				break;
 			}
 
-			Obj *obj;
+			Obj *obj = new Obj();
 			obj->pointer = temp2;
 			objType->objList.push_back(obj);
 
@@ -210,7 +210,7 @@ int main()
 
 		if (isTile)
 		{
-			Obj *obj;
+			Obj *obj = new Obj();
 			obj->pointer = temp2;
 			objType_tiles->objList.push_back(obj);
 		}
