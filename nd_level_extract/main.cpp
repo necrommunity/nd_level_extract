@@ -144,10 +144,8 @@ int main()
 
 	// Get all objects of each type (except tiles)
 
-	for (unsigned int i = 0; i < objType_list.size(); i++)
+	for each (objType *objType in objType_list)
 	{
-		objType *objType = objType_list[i];
-
 		int temp = address_base;
 
 		for each (unsigned int offset in objType->offsets_firstObj)
@@ -166,7 +164,7 @@ int main()
 
 			obj *obj;
 			obj->pointer = temp2;
-			objType_list[i]->objList.push_back(obj);
+			objType->objList.push_back(obj);
 
 			temp = readMemoryInt(handle_process, temp + 0x10);
 		}
@@ -222,13 +220,11 @@ int main()
 
 	// Get attributes of each object
 
-	for (unsigned int i = 0; i < objType_list.size(); i++)
+	for each (objType *objType in objType_list)
 	{
-		for (unsigned int j = 0; j < objType_list[i]->objList.size(); j++)
+		for each (obj *obj in objType->objList)
 		{
-			obj *obj = objType_list[i]->objList[j];
-
-			for (auto const& p : objType_list[i]->attributes)
+			for (auto const& p : objType->attributes)
 			{
 				std::string value;
 
