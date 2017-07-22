@@ -29,11 +29,37 @@ public:
 	std::vector<unsigned int> offsets_firstObj;
 };
 
-int main()
+int main(int argc, char *argv[])
 {
-	HANDLE handle_process;
+	// Get arguments
+
+	int output = 0;
+	std::string filepath = "LEVEL.xml";
+
+	for (int i = 1; i < argc; i++)
+	{
+		std::string arg = argv[i];
+
+		if (arg == "-o" || arg == "--output")
+		{
+			if (i < argc - 1)
+			{
+				output = std::stoi(argv[++i]);
+			}
+		}
+
+		if (arg == "-f" || arg == "--filepath")
+		{
+			if (i < argc - 1)
+			{
+				filepath = argv[++i];
+			}
+		}
+	}
 
 	// Open handle for the game
+
+	HANDLE handle_process;
 
 	try
 	{
@@ -337,7 +363,17 @@ int main()
 
 	// Save XML document
 
-	doc.save_file("LEVEL.xml");
+	switch (output)
+	{
+	case (0):
+	default:
+		doc.save_file(filepath.c_str());
+		break;
+	case (1):
+		doc.save(std::cout);
+		break;
+	}
+	
 	std::cout << "XML file generated";
 
 	return 0;
