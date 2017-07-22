@@ -25,7 +25,7 @@ public:
 	std::string name_singular;
 	std::string name_plural;
 	std::map<std::string, unsigned int> attributes;
-	std::vector<obj> objList;
+	std::vector<obj *> objList;
 	std::vector<unsigned int> offsets_firstObj;
 };
 
@@ -164,8 +164,8 @@ int main()
 				break;
 			}
 
-			obj obj;
-			obj.pointer = temp2;
+			obj *obj;
+			obj->pointer = temp2;
 			objType_list[i]->objList.push_back(obj);
 
 			temp = readMemoryInt(handle_process, temp + 0x10);
@@ -195,9 +195,9 @@ int main()
 
 		for each (objType *objType in objType_list)
 		{
-			for each (obj obj in objType->objList)
+			for each (obj *obj in objType->objList)
 			{
-				if (obj.pointer == temp2)
+				if (obj->pointer == temp2)
 				{
 					isTile = false;
 					break;
@@ -212,8 +212,8 @@ int main()
 
 		if (isTile)
 		{
-			obj obj;
-			obj.pointer = temp2;
+			obj *obj;
+			obj->pointer = temp2;
 			objType_tiles->objList.push_back(obj);
 		}
 	}
@@ -226,7 +226,7 @@ int main()
 	{
 		for (unsigned int j = 0; j < objType_list[i]->objList.size(); j++)
 		{
-			obj obj = objType_list[i]->objList[j];
+			obj *obj = objType_list[i]->objList[j];
 
 			for (auto const& p : objType_list[i]->attributes)
 			{
@@ -242,11 +242,11 @@ int main()
 				}
 				else
 				{
-					int temp_int = readMemoryInt(handle_process, obj.pointer + LOWORD(p.second));
+					int temp_int = readMemoryInt(handle_process, obj->pointer + LOWORD(p.second));
 
 					if (p.second & ATTR_READFLOAT)
 					{
-						float temp_float = readMemoryFloat(handle_process, obj.pointer + LOWORD(p.second));
+						float temp_float = readMemoryFloat(handle_process, obj->pointer + LOWORD(p.second));
 
 						value = std::to_string(temp_float);
 
@@ -260,7 +260,7 @@ int main()
 
 					else if (p.second & ATTR_READUSTR)
 					{
-						int strBase = readMemoryInt(handle_process, obj.pointer + LOWORD(p.second));
+						int strBase = readMemoryInt(handle_process, obj->pointer + LOWORD(p.second));
 						int strLen = readMemoryInt(handle_process, strBase + 0x4);
 						std::wstring str = readMemoryUnicodeString(handle_process, strBase + 0x8, strLen);
 						value = std::string(str.begin(), str.end());
@@ -282,10 +282,8 @@ int main()
 					}
 				}
 
-				obj.attributes.insert(std::make_pair(p.first, value));
+				obj->attributes.insert(std::make_pair(p.first, value));
 			}
-
-			objType_list[i]->objList[j] = obj;
 		}
 	}
 
@@ -293,12 +291,10 @@ int main()
 
 	for (unsigned int i = 0; i < objType_traps->objList.size(); i++)
 	{
-		obj obj = objType_traps->objList[i];
+		obj *obj = objType_traps->objList[i];
 
-		int offset = obj.attributes["type"] == "1" ? 0x110 : 0x10C;
-		obj.attributes["subtype"] = std::to_string(readMemoryInt(handle_process, obj.pointer + offset));
-		
-		objType_traps->objList[i] = obj;
+		int offset = obj->attributes["type"] == "1" ? 0x110 : 0x10C;
+		obj->attributes["subtype"] = std::to_string(readMemoryInt(handle_process, obj->pointer + offset));
 	}
 
 	// Close handle for the game
@@ -336,7 +332,7 @@ int main()
 		{
 			pugi::xml_node node_level_object = node_level_objects.append_child(objType->name_singular.c_str());
 
-			for (auto const& p : objType->objList[j].attributes)
+			for (auto const& p : objType->objList[j]->attributes)
 			{
 				node_level_object.append_attribute(p.first.c_str()) = p.second.c_str();
 			}
