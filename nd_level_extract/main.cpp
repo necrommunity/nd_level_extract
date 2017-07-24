@@ -8,7 +8,7 @@
 
 #define ATTR_HARDCODED (1 << 16) // Use given value, don't read from memory
 #define ATTR_READBYTE (1 << 17) // Read 1 byte from memory
-#define ATTR_READUSTR (1 << 18) // [Currently does not work] Read Unicode string, using additional offset (length of string is at 0x4, string begins at 0x8)
+#define ATTR_READUSTR (1 << 18) // Read Unicode string, using additional offset (length of string is at 0x4, string begins at 0x8)
 #define ATTR_NOITEM (1 << 19) // Set to "no_item"
 #define ATTR_BOOL (1 << 20) // Set to 1 if greater than 1
 #define ATTR_READFLOAT (1 << 21) // Read value as float (temporarily: hardcode to 0)
@@ -367,11 +367,11 @@ int main(int argc, char *argv[])
 
 	switch (output)
 	{
-	case (0):
+	case 0:
 	default:
 		doc.save_file(filepath.c_str());
 		break;
-	case (1):
+	case 1:
 		doc.save(std::cout);
 		break;
 	}
