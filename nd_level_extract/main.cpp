@@ -11,7 +11,7 @@
 #define ATTR_READUSTR (1 << 18) // Read Unicode string, using additional offset (length of string is at 0x4, string begins at 0x8)
 #define ATTR_NOITEM (1 << 19) // Set to "no_item"
 #define ATTR_BOOL (1 << 20) // Set to 1 if greater than 1
-#define ATTR_READFLOAT (1 << 21) // Read value as float (temporarily: hardcode to 0)
+#define ATTR_READFLOAT (1 << 21) // Read value as float
 
 struct Obj
 {
