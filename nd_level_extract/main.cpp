@@ -328,6 +328,10 @@ int main(int argc, char *argv[])
 		obj->attributes["subtype"] = std::to_string(readMemoryInt(handle_process, obj->pointer + offset));
 	}
 
+	// Get run seed
+
+	unsigned int seed = readMemoryInt(handle_process, getBaseAddress(handle_process, "NecroDancer.exe") + 0x42DAF4);
+
 	// Close handle for the game
 
 	closeProcess(handle_process);
@@ -335,6 +339,9 @@ int main(int argc, char *argv[])
 	// Generate XML document
 
 	pugi::xml_document doc;
+
+	pugi::xml_node node_seedcomment = doc.append_child(pugi::node_comment);
+	node_seedcomment.set_value((" Seed: " + std::to_string(seed) + " ").c_str());
 
 	pugi::xml_node node_dungeon = doc.append_child("dungeon");
 	node_dungeon.append_attribute("character") = -1;
