@@ -9,8 +9,17 @@ Simply run the .exe with the game launched and while playing a dungeon
 Command line arguments:
 ```
   -o [--output] <arg>
-Set output destination. 0 = file, 1 = stdout. Default: 0
+Output destination. 0 = file, 1 = stdout. Default: 0.
 
   -f [--filepath] <arg>
-Set filepath for file output. Default: "LEVEL.xml".
+Filepath for file output. Default: "LEVEL.xml".
+
+  -c [--character] <arg>
+Dungeon character ID. Default: -1 (any).
+
+  -n [--dungeonname] <arg>
+Dungeon name. Default: "LEVEL".
+
+  -m [--music] <arg>
+Level music. Default: 0 (1-1).
 ```
