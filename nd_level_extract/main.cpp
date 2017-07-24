@@ -36,6 +36,9 @@ int main(int argc, char *argv[])
 
 	int output = 0;
 	std::string filepath = "LEVEL.xml";
+	int character = -1;
+	std::string dungeonName = "LEVEL";
+	int music = 0;
 
 	for (int i = 1; i < argc; i++)
 	{
@@ -54,6 +57,27 @@ int main(int argc, char *argv[])
 			if (i < argc - 1)
 			{
 				filepath = argv[++i];
+			}
+		}
+		if (arg == "-c" || arg == "--character")
+		{
+			if (i < argc - 1)
+			{
+				character = std::stoi(argv[++i]);
+			}
+		}
+		if (arg == "-n" || arg == "--dungeonname")
+		{
+			if (i < argc - 1)
+			{
+				dungeonName = argv[++i];
+			}
+		}
+		if (arg == "-m" || arg == "--music")
+		{
+			if (i < argc - 1)
+			{
+				music = std::stoi(argv[++i]);
 			}
 		}
 	}
@@ -344,13 +368,13 @@ int main(int argc, char *argv[])
 	node_seedcomment.set_value((" Seed: " + std::to_string(seed) + " ").c_str());
 
 	pugi::xml_node node_dungeon = doc.append_child("dungeon");
-	node_dungeon.append_attribute("character") = -1;
-	node_dungeon.append_attribute("name") = "LEVEL";
+	node_dungeon.append_attribute("character") = character;
+	node_dungeon.append_attribute("name") = dungeonName.c_str();
 	node_dungeon.append_attribute("numLevels") = 1;
 
 	pugi::xml_node node_level = node_dungeon.append_child("level");
 	node_level.append_attribute("bossNum") = -1;
-	node_level.append_attribute("music") = 0;
+	node_level.append_attribute("music") = music;
 	node_level.append_attribute("num") = 1;
 
 	for (unsigned int i = 0; i < objType_list.size(); i++)
