@@ -324,7 +324,7 @@ int main(int argc, char *argv[])
 	{
 		Obj *obj = objType_traps->objList[i];
 
-		int offset = obj->attributes["type"] == "1" ? 0x110 : 0x10C;
+		int offset = obj->attributes["type"] == "1" ? 0x110 : 0x10C; // A different pointer is used for bounce traps (type ID 1)
 		obj->attributes["subtype"] = std::to_string(readMemoryInt(handle_process, obj->pointer + offset));
 	}
 
