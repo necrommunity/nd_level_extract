@@ -348,8 +348,22 @@ int main(int argc, char *argv[])
 	{
 		Obj *obj = objType_traps->objList[i];
 
-		int offset = obj->attributes["type"] == "1" ? 0x110 : 0x10C; // A different pointer is used for bounce traps (type ID 1)
-		obj->attributes["subtype"] = std::to_string(readMemoryInt(handle_process, obj->pointer + offset));
+		if (obj->attributes["type"] == "1") // Bounce trap
+		{
+			obj->attributes["subtype"] = std::to_string(readMemoryInt(handle_process, obj->pointer + 0x110));
+		}
+		else if (obj->attributes["type"] == "8") // Travel rune
+		{
+			obj->attributes["subtype"] = std::to_string(readMemoryInt(handle_process, obj->pointer + 0x10C));
+		}
+		else if (obj->attributes["type"] == "10") // Fire trap
+		{
+			obj->attributes["subtype"] = std::to_string(readMemoryInt(handle_process, obj->pointer + 0x10C));
+		}
+		else
+		{
+			obj->attributes["subtype"] = "-1";
+		}
 	}
 
 	// Get run seed
