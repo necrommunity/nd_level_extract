@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
 	objType_chests->attributes = {
 		{"color", 0xF4},
 		{"contents", ATTR_READUSTR | 0xF8},
-		{"hidden", 0x9C},
+		{"hidden", ATTR_READBYTE | 0x9C},
 		{"saleCost", 0x114}, // Buggy
 		{"singleChoice", ATTR_READBYTE | 0xFC},
 		{"x", 0x14},
