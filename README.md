@@ -1,6 +1,6 @@
 # nd_level_extract
 
-A tool to generate level editor compatible levels for Crypt of the NecroDancer v2.55 (DLC)
+A tool to generate level editor compatible levels for Crypt of the NecroDancer v2.57 (DLC)
 
 ## Usage
 
