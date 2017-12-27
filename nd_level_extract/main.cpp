@@ -387,7 +387,7 @@ int main(int argc, char *argv[])
 
 	// Get run seed
 
-	unsigned int seed = readMemoryInt(handle_process, getBaseAddress(handle_process, "NecroDancer.exe") + 0x42DAF4);
+	unsigned int seed = readMemoryInt(handle_process, getBaseAddress(handle_process, "NecroDancer.exe") + 0x435AF4);
 
 	// Close handle for the game
 
