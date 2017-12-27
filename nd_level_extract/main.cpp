@@ -104,103 +104,124 @@ int main(int argc, char *argv[])
 
 	// Create all instances of objType
 
-	std::vector<ObjType *> objType_list;
+	std::map<std::string, ObjType *> objTypeList;
 
-	ObjType *objType_tiles = new ObjType();
-	objType_tiles->name_singular = "tile";
-	objType_tiles->name_plural = "tiles";
-	objType_tiles->attributes = {
-		{"cracked", ATTR_READBYTE | 0x60},
-		{"torch", ATTR_BOOL | 0x64},
-		{"type", 0x58},
-		{"x", 0x14},
-		{"y", 0x18},
-		{"zone", 0x5C}
-	};
-	objType_tiles->offsets_firstObj = {0x435BEC, 0x10, 0x10, 0x10};
-	// Don't add to objType_list yet, special case
+	{
+		ObjType *objType_tiles = new ObjType();
+		objType_tiles->name_singular = "tile";
+		objType_tiles->name_plural = "tiles";
+		objType_tiles->attributes = {
+			{"cracked", ATTR_READBYTE | 0x60},
+			{"torch", ATTR_BOOL | 0x64},
+			{"type", 0x58},
+			{"x", 0x14},
+			{"y", 0x18},
+			{"zone", 0x5C}
+		};
+		objType_tiles->offsets_firstObj = {0x435BEC, 0x10, 0x10, 0x10};
+		objTypeList.insert(std::make_pair<>("tiles", objType_tiles));
+	}
 
-	ObjType *objType_traps = new ObjType();
-	objType_traps->name_singular = "trap";
-	objType_traps->name_plural = "traps";
-	objType_traps->attributes = {
-		{"subtype", ATTR_HARDCODED | 0}, // Special case
-		{"type", 0xF4},
-		{"x", 0x14},
-		{"y", 0x18}
-	};
-	objType_traps->offsets_firstObj = {0x43597C, 0x10, 0x10};
-	objType_list.push_back(objType_traps);
+	{
+		ObjType *objType_traps = new ObjType();
+		objType_traps->name_singular = "trap";
+		objType_traps->name_plural = "traps";
+		objType_traps->attributes = {
+			{"subtype", ATTR_HARDCODED | 0}, // Special case
+			{"type", 0xF4},
+			{"x", 0x14},
+			{"y", 0x18}
+		};
+		objType_traps->offsets_firstObj = {0x43597C, 0x10, 0x10};
+		objTypeList.insert(std::make_pair<>("traps", objType_traps));
+	}
 
-	ObjType *objType_enemies = new ObjType();
-	objType_enemies->name_singular = "enemy";
-	objType_enemies->name_plural = "enemies";
-	objType_enemies->attributes = {
-		{"beatDelay", 0x114},
-		{"lord", ATTR_READBYTE | 0x118},
-		{"type", 0x110},
-		{"x", 0x14},
-		{"y", 0x18}
-	};
-	objType_enemies->offsets_firstObj = {0x4359E0, 0x10, 0x10};
-	objType_list.push_back(objType_enemies);
+	{
+		ObjType *objType_enemies = new ObjType();
+		objType_enemies->name_singular = "enemy";
+		objType_enemies->name_plural = "enemies";
+		objType_enemies->attributes = {
+			{"beatDelay", 0x114},
+			{"lord", ATTR_READBYTE | 0x118},
+			{"type", 0x110},
+			{"x", 0x14},
+			{"y", 0x18}
+		};
+		objType_enemies->offsets_firstObj = {0x4359E0, 0x10, 0x10};
+		objTypeList.insert(std::make_pair<>("enemies", objType_enemies));
+	}
 
-	ObjType *objType_items = new ObjType();
-	objType_items->name_singular = "item";
-	objType_items->name_plural = "items";
-	objType_items->attributes = {
-		{"bloodCost", ATTR_READFLOAT | 0x148},
-		{"saleCost", 0x100},
-		{"singleChoice", ATTR_READBYTE | 0xF8},
-		{"type", ATTR_READUSTR | 0xF4},
-		{"x", 0x14},
-		{"y", 0x18}
-	};
-	objType_items->offsets_firstObj = {0x435978, 0x10, 0x10};
-	objType_list.push_back(objType_items);
+	{
+		ObjType *objType_items = new ObjType();
+		objType_items->name_singular = "item";
+		objType_items->name_plural = "items";
+		objType_items->attributes = {
+			{"bloodCost", ATTR_READFLOAT | 0x148},
+			{"saleCost", 0x100},
+			{"singleChoice", ATTR_READBYTE | 0xF8},
+			{"type", ATTR_READUSTR | 0xF4},
+			{"x", 0x14},
+			{"y", 0x18}
+		};
+		objType_items->offsets_firstObj = {0x435978, 0x10, 0x10};
+		objTypeList.insert(std::make_pair<>("items", objType_items));
+	}
 
-	ObjType *objType_chests = new ObjType();
-	objType_chests->name_singular = "chest";
-	objType_chests->name_plural = "chests";
-	objType_chests->attributes = {
-		{"color", 0xF4},
-		{"contents", ATTR_READUSTR | 0xF8},
-		{"hidden", ATTR_READBYTE | 0x9C},
-		{"saleCost", 0x114}, // Buggy
-		{"singleChoice", ATTR_READBYTE | 0xFC},
-		{"x", 0x14},
-		{"y", 0x18}
-	};
-	objType_chests->offsets_firstObj = {0x435938, 0x10, 0x10};
-	objType_list.push_back(objType_chests);
+	{
+		ObjType *objType_chests = new ObjType();
+		objType_chests->name_singular = "chest";
+		objType_chests->name_plural = "chests";
+		objType_chests->attributes = {
+			{"color", 0xF4},
+			{"contents", ATTR_READUSTR | 0xF8},
+			{"hidden", ATTR_READBYTE | 0x9C},
+			{"saleCost", 0x114}, // Buggy
+			{"singleChoice", ATTR_READBYTE | 0xFC},
+			{"x", 0x14},
+			{"y", 0x18}
+		};
+		objType_chests->offsets_firstObj = {0x435938, 0x10, 0x10};
+		objTypeList.insert(std::make_pair<>("chests", objType_chests));
+	}
 
-	ObjType *objType_crates = new ObjType();
-	objType_crates->name_singular = "crate";
-	objType_crates->name_plural = "crates";
-	objType_crates->attributes = {
-		{"contents", ATTR_READUSTR | 0x238},
-		{"type", 0x234},
-		{"x", 0x14},
-		{"y", 0x18}
-	};
-	objType_crates->offsets_firstObj = {0x4356AC, 0x10, 0x10};
-	objType_list.push_back(objType_crates);
+	{
+		ObjType *objType_crates = new ObjType();
+		objType_crates->name_singular = "crate";
+		objType_crates->name_plural = "crates";
+		objType_crates->attributes = {
+			{"contents", ATTR_READUSTR | 0x238},
+			{"type", 0x234},
+			{"x", 0x14},
+			{"y", 0x18}
+		};
+		objType_crates->offsets_firstObj = {0x4356AC, 0x10, 0x10};
+		objTypeList.insert(std::make_pair<>("crates", objType_crates));
+	}
 
-	ObjType *objType_shrines = new ObjType();
-	objType_shrines->name_singular = "shrine";
-	objType_shrines->name_plural = "shrines";
-	objType_shrines->attributes = {
-		{"type", 0xF4},
-		{"x", 0x14},
-		{"y", 0x18}
-	};
-	objType_shrines->offsets_firstObj = {0x4356F8, 0x10, 0x10};
-	objType_list.push_back(objType_shrines);
+	{
+		ObjType *objType_shrines = new ObjType();
+		objType_shrines->name_singular = "shrine";
+		objType_shrines->name_plural = "shrines";
+		objType_shrines->attributes = {
+			{"type", 0xF4},
+			{"x", 0x14},
+			{"y", 0x18}
+		};
+		objType_shrines->offsets_firstObj = {0x4356F8, 0x10, 0x10};
+		objTypeList.insert(std::make_pair<>("shrines", objType_shrines));
+	}
 
 	// Get all objects of each type (except tiles)
 
-	for each (ObjType *objType in objType_list)
+	for (auto const& el : objTypeList)
 	{
+		if (el.first == "tiles") // Skip tiles
+		{
+			continue;
+		}
+
+		ObjType *objType = el.second;
+
 		int temp = address_base;
 
 		for each (unsigned int offset in objType->offsets_firstObj)
@@ -231,7 +252,7 @@ int main(int argc, char *argv[])
 
 	int temp = address_base;
 
-	for each (unsigned int offset in objType_tiles->offsets_firstObj)
+	for each (unsigned int offset in objTypeList["tiles"]->offsets_firstObj)
 	{
 		temp = readMemoryInt(handle_process, temp + offset);
 	}
@@ -248,9 +269,9 @@ int main(int argc, char *argv[])
 
 		bool isTile = true;
 
-		for each (ObjType *objType in objType_list)
+		for each (auto const& el in objTypeList)
 		{
-			for each (Obj *obj in objType->objList)
+			for each (Obj *obj in el.second->objList)
 			{
 				if (obj->pointer == temp2)
 				{
@@ -269,21 +290,21 @@ int main(int argc, char *argv[])
 		{
 			Obj *obj = new Obj();
 			obj->pointer = temp2;
-			objType_tiles->objList.push_back(obj);
+			objTypeList["tiles"]->objList.push_back(obj);
 		}
 	}
 
-	logfile << "Found " << objType_tiles->objList.size() << " " << objType_tiles->name_plural.c_str() << '\n';
+	logfile << "Found " << objTypeList["tiles"]->objList.size() << " " << objTypeList["tiles"]->name_plural.c_str() << '\n';
 
-	objType_list.insert(objType_list.begin(), objType_tiles);
+	objTypeList.insert(std::make_pair<>("tiles", objTypeList["tiles"]));
 
 	// Get attributes of each object
 
-	for each (ObjType *objType in objType_list)
+	for each (auto const& el in objTypeList)
 	{
-		for each (Obj *obj in objType->objList)
+		for each (Obj *obj in el.second->objList)
 		{
-			for (auto const& p : objType->attributes)
+			for (auto const& p : el.second->attributes)
 			{
 				std::string value;
 
@@ -344,9 +365,9 @@ int main(int argc, char *argv[])
 
 	// Get subtype of all traps (special case)
 
-	for (unsigned int i = 0; i < objType_traps->objList.size(); i++)
+	for (unsigned int i = 0; i < objTypeList["traps"]->objList.size(); i++)
 	{
-		Obj *obj = objType_traps->objList[i];
+		Obj *obj = objTypeList["traps"]->objList[i];
 
 		if (obj->attributes["type"] == "1") // Bounce trap
 		{
@@ -391,9 +412,9 @@ int main(int argc, char *argv[])
 	node_level.append_attribute("music") = music;
 	node_level.append_attribute("num") = 1;
 
-	for (unsigned int i = 0; i < objType_list.size(); i++)
+	for (auto const &el : objTypeList)
 	{
-		ObjType *objType = objType_list[i];
+		ObjType *objType = el.second;
 
 		pugi::xml_node node_level_objects = node_level.append_child(objType->name_plural.c_str());
 
