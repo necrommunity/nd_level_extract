@@ -365,10 +365,8 @@ int main(int argc, char *argv[])
 
 	// Get subtype of all traps (special case)
 
-	for (unsigned int i = 0; i < objTypeList["traps"]->objList.size(); i++)
+	for each (Obj *obj in objTypeList["traps"]->objList)
 	{
-		Obj *obj = objTypeList["traps"]->objList[i];
-
 		if (obj->attributes["type"] == "1") // Bounce trap
 		{
 			obj->attributes["subtype"] = std::to_string(readMemoryInt(handle_process, obj->pointer + 0x110));
