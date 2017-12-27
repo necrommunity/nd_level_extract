@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
 		{"y", 0x18},
 		{"zone", 0x5C}
 	};
-	objType_tiles->offsets_firstObj = {0x431BEC, 0x10, 0x10, 0x10};
+	objType_tiles->offsets_firstObj = {0x435BEC, 0x10, 0x10, 0x10};
 	// Don't add to objType_list yet, special case
 
 	ObjType *objType_traps = new ObjType();
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType_traps->offsets_firstObj = {0x43197C, 0x10, 0x10};
+	objType_traps->offsets_firstObj = {0x43597C, 0x10, 0x10};
 	objType_list.push_back(objType_traps);
 
 	ObjType *objType_enemies = new ObjType();
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType_enemies->offsets_firstObj = {0x4319E0, 0x10, 0x10};
+	objType_enemies->offsets_firstObj = {0x4359E0, 0x10, 0x10};
 	objType_list.push_back(objType_enemies);
 
 	ObjType *objType_items = new ObjType();
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType_items->offsets_firstObj = {0x431978, 0x10, 0x10};
+	objType_items->offsets_firstObj = {0x435978, 0x10, 0x10};
 	objType_list.push_back(objType_items);
 
 	ObjType *objType_chests = new ObjType();
@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType_chests->offsets_firstObj = {0x431938, 0x10, 0x10};
+	objType_chests->offsets_firstObj = {0x435938, 0x10, 0x10};
 	objType_list.push_back(objType_chests);
 
 	ObjType *objType_crates = new ObjType();
@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType_crates->offsets_firstObj = {0x4316AC, 0x10, 0x10};
+	objType_crates->offsets_firstObj = {0x4356AC, 0x10, 0x10};
 	objType_list.push_back(objType_crates);
 
 	ObjType *objType_shrines = new ObjType();
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
 		{"x", 0x14},
 		{"y", 0x18}
 	};
-	objType_shrines->offsets_firstObj = {0x4316F8, 0x10, 0x10};
+	objType_shrines->offsets_firstObj = {0x4356F8, 0x10, 0x10};
 	objType_list.push_back(objType_shrines);
 
 	// Get all objects of each type (except tiles)
